@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>价格方案 - TextArt AI</title>
+    <style>
+        /* 复用首页的基础样式 */
+        :root {
+            --primary-color: #00f7ff;
+            --secondary-color: #0b1c2d;
+            --accent-color: #ff2957;
+            --text-color: #ffffff;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 2rem;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #040b14;
+            color: #ffffff;
+            position: relative;
+        }
+
+        /* 复用首页的背景效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(217deg, rgba(0,247,255,.1), rgba(0,0,0,0) 70.71%),
+                linear-gradient(127deg, rgba(255,41,87,.1), rgba(0,0,0,0) 70.71%),
+                linear-gradient(336deg, rgba(0,98,255,.1), rgba(0,0,0,0) 70.71%);
+            z-index: -2;
+        }
+
+        /* 复用首页的导航栏样式 */
+        .navbar {
+            background-color: var(--secondary-color);
+            padding: var(--spacing-md) 5%;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-center {
+            justify-self: start;
+            margin-left: 3rem;
+        }
+
+        .nav-center a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: 2rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-center a.active {
+            color: var(--primary-color);
+        }
+
+        .nav-center a.active::after {
+            width: 100%;
+        }
+
+        .nav-right .login-btn {
+            color: var(--primary-color);
+            text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 24px;
+            transition: all 0.3s;
+        }
+
+        .nav-right .login-btn:hover {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+        }
+
+        /* 价格页面特定样式 */
+        .pricing-header {
+            padding-top: 120px;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .pricing-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pricing-header p {
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background: var(--secondary-color);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+        }
+
+        .pricing-card.popular::before {
+            content: '最受欢迎';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.5rem 3rem;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .plan-price small {
+            font-size: 1rem;
+            color: #a0a0a0;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            margin-bottom: 1rem;
+            color: #a0a0a0;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .plan-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: transparent;
+            color: var(--primary-color);
+            text-decoration: none;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            transition: all 0.3s;
+        }
+
+        .plan-button:hover {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+        }
+
+        .pricing-card.popular .plan-button {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+        }
+
+        .pricing-card.popular .plan-button:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .pricing-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .pricing-header {
+                padding: 100px 1rem 0;
+            }
+
+            .pricing-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .pricing-container {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 1.5rem;
+            }
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .language-selector {
+            position: relative;
+        }
+
+        .language-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .language-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--secondary-color);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .language-dropdown.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .language-dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-radius: var(--border-radius);
+        }
+
+        .language-dropdown a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--primary-color);
+        }
+
+        .language-dropdown a.active {
+            color: var(--primary-color);
+            background: rgba(0,247,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .language-dropdown {
+                right: -1rem;
+            }
+        }
+    </style>
+    <script src="translations.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">TextArt AI</div>
+            <div class="nav-center">
+                <a href="index.html" data-i18n="home">首页</a>
+                <a href="pricing.html" class="active" data-i18n="pricing">价格</a>
+            </div>
+            <div class="nav-right">
+                <div class="language-selector">
+                    <button class="language-btn">
+                        <i class="fas fa-globe"></i>
+                        <span class="current-lang">中文</span>
+                    </button>
+                    <div class="language-dropdown">
+                        <a href="#" data-lang="zh" class="active" data-i18n="chinese">中文</a>
+                        <a href="#" data-lang="en" data-i18n="english">English</a>
+                    </div>
+                </div>
+                <a href="login.html" class="login-btn" data-i18n="login">登录</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pricing-header">
+        <h1 data-i18n="pricing_title">选择适合您的方案</h1>
+        <p data-i18n="pricing_subtitle">无论您是个人创作者还是企业用户，我们都有适合您需求的方案</p>
+    </section>
+
+    <div class="pricing-container">
+        <div class="pricing-card">
+            <h3 class="plan-name" data-i18n="basic_plan">基础版</h3>
+            <div class="plan-price">
+                ¥99<small data-i18n="per_month">/月</small>
+            </div>
+            <ul class="plan-features">
+                <li data-i18n="basic_quota">每月1000次生成额度</li>
+                <li data-i18n="basic_resolution">最高1024x1024分辨率</li>
+                <li data-i18n="basic_styles">5种基础艺术风格</li>
+                <li data-i18n="basic_support">基础客户支持</li>
+                <li data-i18n="basic_community">社区访问权限</li>
+            </ul>
+            <a href="#" class="plan-button" data-i18n="start_now">立即开始</a>
+        </div>
+
+        <div class="pricing-card popular">
+            <h3 class="plan-name" data-i18n="pro_plan">专业版</h3>
+            <div class="plan-price">
+                ¥199<small data-i18n="per_month">/月</small>
+            </div>
+            <ul class="plan-features">
+                <li data-i18n="pro_quota">每月3000次生成额度</li>
+                <li data-i18n="pro_resolution">最高4096x4096分辨率</li>
+                <li data-i18n="pro_styles">15种高级艺术风格</li>
+                <li data-i18n="pro_support">优先客户支持</li>
+                <li data-i18n="pro_api">API访问权限</li>
+                <li data-i18n="pro_commercial">商用授权</li>
+            </ul>
+            <a href="#" class="plan-button" data-i18n="start_now">立即开始</a>
+        </div>
+
+        <div class="pricing-card">
+            <h3 class="plan-name" data-i18n="enterprise_plan">企业版</h3>
+            <div class="plan-price">
+                ¥499<small data-i18n="per_month">/月</small>
+            </div>
+            <ul class="plan-features">
+                <li data-i18n="enterprise_quota">无限生成额度</li>
+                <li data-i18n="enterprise_resolution">自定义分辨率</li>
+                <li data-i18n="enterprise_styles">所有艺术风格</li>
+                <li data-i18n="enterprise_support">24/7专属支持</li>
+                <li data-i18n="enterprise_api">高级API功能</li>
+                <li data-i18n="enterprise_custom">自定义功能开发</li>
+            </ul>
+            <a href="#" class="plan-button" data-i18n="contact_us">联系我们</a>
+        </div>
+    </div>
+
+    <script>
+        // 复用首页的导航栏响应式处理
+        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
+            document.querySelector('.nav-center').classList.toggle('active');
+        });
+
+        // 语言切换功能
+        const languageBtn = document.querySelector('.language-btn');
+        const languageDropdown = document.querySelector('.language-dropdown');
+        const currentLang = document.querySelector('.current-lang');
+
+        // 切换语言下拉菜单
+        languageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+
+        // 点击其他地方关闭下拉菜单
+        document.addEventListener('click', () => {
+            languageDropdown.classList.remove('show');
+        });
+
+        // 更新页面文本的函数
+        function updatePageLanguage(lang) {
+            // 更新所有带有 data-i18n 属性的元素
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+
+            // 更新 HTML 语言属性
+            document.documentElement.lang = lang;
+
+            // 更新当前语言显示
+            currentLang.textContent = lang === 'zh' ? translations[lang].chinese : translations[lang].english;
+
+            // 更新最受欢迎标签
+            const popularCard = document.querySelector('.pricing-card.popular');
+            if (popularCard) {
+                popularCard.setAttribute('data-popular-text', translations[lang].popular_tag);
+            }
+        }
+
+        // 语言切换处理
+        document.querySelectorAll('.language-dropdown a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = e.target.dataset.lang;
+                
+                // 更新激活状态
+                document.querySelectorAll('.language-dropdown a').forEach(a => {
+                    a.classList.remove('active');
+                });
+                e.target.classList.add('active');
+
+                // 保存语言选择
+                localStorage.setItem('preferred_language', lang);
+
+                // 更新页面文本
+                updatePageLanguage(lang);
+            });
+        });
+
+        // 页面加载时应用保存的语言设置
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferred_language') || 'zh';
+            updatePageLanguage(savedLang);
+            
+            // 更新语言选择器的激活状态
+            document.querySelectorAll('.language-dropdown a').forEach(a => {
+                a.classList.toggle('active', a.dataset.lang === savedLang);
+            });
+        });
+    </script>
+</body>
+</html> 
